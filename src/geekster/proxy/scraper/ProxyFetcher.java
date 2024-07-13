@@ -70,7 +70,7 @@ class ProxyFetcher_Geonode extends Thread {
     }
 }
 
-class ProxyFetcher_ProxyList extends Thread {
+class ProxyFetcher_ProxyListDownload extends Thread {
     @Override
     public void run() {
         try {
@@ -129,3 +129,84 @@ class ProxyFetcher_ProxyList extends Thread {
     }
 }
 
+
+class ProxyFetcher_OpenProxyList extends Thread {
+    @Override
+    public void run() {
+        try {
+            fetchedOpenProxyList();
+            
+        } catch (ProtocolException ex) {
+            Logger.getLogger(ProxyFetcher_ProxyScrape.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ProxyFetcher_ProxyScrape.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static String fetchOpenProxyListHTTP() throws MalformedURLException, ProtocolException, IOException {
+        URL url = new URL("https://api.openproxylist.xyz/http.txt");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            response.append("http://" + line + "\n");
+        }
+
+        
+        reader.close();
+        return response.toString();
+    }
+    
+    public static String fetchOpenProxyListSOCKS4() throws MalformedURLException, ProtocolException, IOException {
+        URL url = new URL("https://api.openproxylist.xyz/socks4.txt");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            response.append("socks4://" + line + "\n");
+        }
+
+        
+        reader.close();
+        return response.toString();
+    }
+    
+    public static String fetchOpenProxyListSOCKS5() throws MalformedURLException, ProtocolException, IOException {
+        URL url = new URL("https://api.openproxylist.xyz/socks5.txt");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            response.append("socks5://" + line + "\n");
+        }
+
+        
+        reader.close();
+        return response.toString();
+    }
+    
+    
+    private static void fetchedOpenProxyList() throws ProtocolException, IOException{
+        
+        String httpProxies = fetchOpenProxyListHTTP();
+        String socks4Proxies = fetchOpenProxyListSOCKS4();
+        String socks5Proxies = fetchOpenProxyListSOCKS5();
+        String allProxies = ( httpProxies + socks4Proxies + socks5Proxies);
+                
+        ProxyParser_OpenProxyList parserThread = new ProxyParser_OpenProxyList(allProxies);
+        parserThread.start();
+        
+    }
+}
