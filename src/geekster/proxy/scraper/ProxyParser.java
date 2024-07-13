@@ -121,31 +121,3 @@ class ProxyParser_ProxyListDownload extends Thread {
 
 
 }
-class ProxyParser_OpenProxyList extends Thread {
-    private final String response;
-
-    public ProxyParser_OpenProxyList(String response) {
-        this.response = response;
-    }
-
-    @Override
-    public void run() {
-        try {
-            parseOpenProxyList();
-        } catch (IOException ex) {
-            Logger.getLogger(ProxyParser_ProxyListDownload.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void parseOpenProxyList() throws IOException {
-         String[] proxies = response.split("\n");
-         for(String proxy : proxies){
-             ProxyParser.proxyList.add(proxy);  
-         }
-         GUI.addListToOutput();
-         
-         
-    }
-
-
-}
