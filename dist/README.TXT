@@ -1,24 +1,32 @@
-# HOW TO OPEN
+========================
+BUILD OUTPUT DESCRIPTION
+========================
 
-- **Install Java (JDK 22)**: If you don't have Java, download and install it from Oracle: https://www.oracle.com/java/technologies/downloads/
+When you build an Java application project that has a main class, the IDE
+automatically copies all of the JAR
+files on the projects classpath to your projects dist/lib folder. The IDE
+also adds each of the JAR files to the Class-Path element in the application
+JAR files manifest file (MANIFEST.MF).
 
-- **Download**: Download the ZIP file from GitHub.
+To run the project from the command line, go to the dist folder and
+type the following:
 
-- **Extract**: Unzip the file and navigate to the "dist" folder.
+java -jar "Geekster-Proxy-Scraper.jar" 
 
-- **Open**: Double-click "Geekster-Proxy-Scraper.jar" to run the application.
+To distribute this project, zip up the dist folder (including the lib folder)
+and distribute the ZIP file.
 
+Notes:
 
-# HOW TO USE
-
-VIDEO DEMONSRATION - https://www.youtube.com/watch?v=G_DFMdmX8WY
-
-- **Select Sites**: Select the sites to get proxies from and click "Start".
-
-- **Filter Proxies**: Once proxies appear in the output box, use the checkboxes to select which ones to check. You can choose the number of threads and optionally enter a URL for proxy checking.
-
-- **Check Proxies**: Click "Check Proxies" to start the process.
-
-- **View Results**: After checking, a popup will show the results. Successful proxies will appear in the output area.
-
-- **Save or Copy**: Select the type of proxy and choose to save to a file or copy to clipboard.
+* If two JAR files on the project classpath have the same name, only the first
+JAR file is copied to the lib folder.
+* Only JAR files are copied to the lib folder.
+If the classpath contains other types of files or folders, these files (folders)
+are not copied.
+* If a library on the projects classpath also has a Class-Path element
+specified in the manifest,the content of the Class-Path element has to be on
+the projects runtime path.
+* To set a main class in a standard Java project, right-click the project node
+in the Projects window and choose Properties. Then click Run and enter the
+class name in the Main Class field. Alternatively, you can manually type the
+class name in the manifest Main-Class element.
