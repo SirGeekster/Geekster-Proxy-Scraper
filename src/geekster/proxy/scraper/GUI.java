@@ -24,6 +24,7 @@ public class GUI extends javax.swing.JFrame {
         sitesToScrape.add("proxyscrape");
         sitesToScrape.add("geonode");
         sitesToScrape.add("proxy-list");
+        sitesToScrape.add("openproxy-list");
     }
 
     public GUI() {
@@ -62,10 +63,11 @@ public class GUI extends javax.swing.JFrame {
 
 
         ArrayList<String> tempFilteredList = new ArrayList<>();
+        ArrayList<String> proxyListCopy = new ArrayList<>(proxyList); 
+        ArrayList<String> displayProxyListCopy = new ArrayList<>(displayProxyList);
 
-
-        for (String proxyInfo : proxyList) {
-            for (String displayProxy : displayProxyList) {
+        for (String proxyInfo : proxyListCopy) {
+            for (String displayProxy : displayProxyListCopy) {
                 if (proxyInfo.contains(displayProxy)) {
                     proxyCountNum++;
                     tempFilteredList.add(proxyInfo);
@@ -75,11 +77,8 @@ public class GUI extends javax.swing.JFrame {
             }
         }
 
-
         filteredProxyList.clear();
         filteredProxyList.addAll(tempFilteredList);
-
-
 
         proxyCount.setText(Integer.toString(proxyCountNum));
     }
@@ -100,6 +99,7 @@ public class GUI extends javax.swing.JFrame {
         siteProxyScrape = new javax.swing.JCheckBox();
         siteGeonode = new javax.swing.JCheckBox();
         siteProxyListDownload = new javax.swing.JCheckBox();
+        siteOpenProxyList = new javax.swing.JCheckBox();
         sitesLabelBackground = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         startButtonBackground = new javax.swing.JPanel();
@@ -139,7 +139,7 @@ public class GUI extends javax.swing.JFrame {
 
         titleBackground.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         jLabel1.setText("Geekster Proxy-Scraper ");
         titleBackground.add(jLabel1);
 
@@ -147,8 +147,10 @@ public class GUI extends javax.swing.JFrame {
         titleBackground.setBounds(0, 0, 500, 40);
 
         sitesBackground.setBackground(new java.awt.Color(255, 255, 255));
+        sitesBackground.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
         siteProxyScrape.setBackground(new java.awt.Color(255, 255, 255));
+        siteProxyScrape.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         siteProxyScrape.setSelected(true);
         siteProxyScrape.setText("ProxyScrape");
         siteProxyScrape.addActionListener(new java.awt.event.ActionListener() {
@@ -159,6 +161,7 @@ public class GUI extends javax.swing.JFrame {
         sitesBackground.add(siteProxyScrape);
 
         siteGeonode.setBackground(new java.awt.Color(255, 255, 255));
+        siteGeonode.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         siteGeonode.setSelected(true);
         siteGeonode.setText("GeoNode");
         siteGeonode.addActionListener(new java.awt.event.ActionListener() {
@@ -169,6 +172,7 @@ public class GUI extends javax.swing.JFrame {
         sitesBackground.add(siteGeonode);
 
         siteProxyListDownload.setBackground(new java.awt.Color(255, 255, 255));
+        siteProxyListDownload.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         siteProxyListDownload.setSelected(true);
         siteProxyListDownload.setText("Proxy-List");
         siteProxyListDownload.addActionListener(new java.awt.event.ActionListener() {
@@ -178,12 +182,24 @@ public class GUI extends javax.swing.JFrame {
         });
         sitesBackground.add(siteProxyListDownload);
 
+        siteOpenProxyList.setBackground(new java.awt.Color(255, 255, 255));
+        siteOpenProxyList.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
+        siteOpenProxyList.setSelected(true);
+        siteOpenProxyList.setText("OpenProxyList");
+        siteOpenProxyList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                siteOpenProxyListActionPerformed(evt);
+            }
+        });
+        sitesBackground.add(siteOpenProxyList);
+
         mainBackground.add(sitesBackground);
         sitesBackground.setBounds(0, 90, 500, 30);
 
         sitesLabelBackground.setBackground(new java.awt.Color(255, 255, 255));
+        sitesLabelBackground.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Yu Gothic UI Light", 0, 14)); // NOI18N
         jLabel2.setText("Sites to scrape");
         sitesLabelBackground.add(jLabel2);
 
@@ -191,9 +207,11 @@ public class GUI extends javax.swing.JFrame {
         sitesLabelBackground.setBounds(0, 60, 500, 30);
 
         startButtonBackground.setBackground(new java.awt.Color(255, 255, 255));
+        startButtonBackground.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
         btnStart.setBackground(new java.awt.Color(153, 255, 153));
         btnStart.setText("Start");
+        btnStart.setToolTipText("");
         btnStart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStartActionPerformed(evt);
@@ -204,8 +222,11 @@ public class GUI extends javax.swing.JFrame {
         mainBackground.add(startButtonBackground);
         startButtonBackground.setBounds(0, 130, 500, 40);
 
+        jScrollPane1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
+
         outputArea.setEditable(false);
         outputArea.setColumns(20);
+        outputArea.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         outputArea.setLineWrap(true);
         outputArea.setRows(5);
         jScrollPane1.setViewportView(outputArea);
@@ -214,11 +235,13 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane1.setBounds(10, 240, 480, 140);
 
         sortBackground.setBackground(new java.awt.Color(255, 255, 255));
+        sortBackground.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
         jLabel3.setText("Sort by:");
         sortBackground.add(jLabel3);
 
         comboSort.setBackground(new java.awt.Color(255, 255, 254));
+        comboSort.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         comboSort.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "None", "Type (Ascending)", "Type (Descending)", " " }));
         comboSort.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -231,9 +254,10 @@ public class GUI extends javax.swing.JFrame {
         sortBackground.setBounds(300, 200, 200, 30);
 
         proxyTypeBackground.setBackground(new java.awt.Color(255, 255, 255));
+        proxyTypeBackground.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
         checkboxHTTP.setBackground(new java.awt.Color(255, 255, 254));
-        checkboxHTTP.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        checkboxHTTP.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 11)); // NOI18N
         checkboxHTTP.setSelected(true);
         checkboxHTTP.setText("HTTP    ");
         checkboxHTTP.addActionListener(new java.awt.event.ActionListener() {
@@ -244,7 +268,7 @@ public class GUI extends javax.swing.JFrame {
         proxyTypeBackground.add(checkboxHTTP);
 
         checkboxSOCKS4.setBackground(new java.awt.Color(255, 255, 254));
-        checkboxSOCKS4.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        checkboxSOCKS4.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 10)); // NOI18N
         checkboxSOCKS4.setSelected(true);
         checkboxSOCKS4.setText("SOCKS4");
         checkboxSOCKS4.addActionListener(new java.awt.event.ActionListener() {
@@ -255,7 +279,7 @@ public class GUI extends javax.swing.JFrame {
         proxyTypeBackground.add(checkboxSOCKS4);
 
         checkboxSOCKS5.setBackground(new java.awt.Color(255, 255, 254));
-        checkboxSOCKS5.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        checkboxSOCKS5.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 10)); // NOI18N
         checkboxSOCKS5.setSelected(true);
         checkboxSOCKS5.setText("SOCKS5");
         checkboxSOCKS5.addActionListener(new java.awt.event.ActionListener() {
@@ -269,14 +293,17 @@ public class GUI extends javax.swing.JFrame {
         proxyTypeBackground.setBounds(0, 400, 500, 29);
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
+        jSeparator1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         jSeparator1.setMinimumSize(new java.awt.Dimension(500, 20));
         jSeparator1.setPreferredSize(new java.awt.Dimension(50, 20));
         mainBackground.add(jSeparator1);
         jSeparator1.setBounds(0, 170, 500, 10);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 254));
+        jPanel1.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
         showProxyType.setBackground(new java.awt.Color(255, 255, 254));
+        showProxyType.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         showProxyType.setSelected(true);
         showProxyType.setText("Show proxy type");
         showProxyType.addActionListener(new java.awt.event.ActionListener() {
@@ -290,8 +317,9 @@ public class GUI extends javax.swing.JFrame {
         jPanel1.setBounds(10, 200, 130, 30);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
-        lblProxyCount.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        lblProxyCount.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 10)); // NOI18N
         lblProxyCount.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblProxyCount.setText("Proxies Found:");
         jPanel2.add(lblProxyCount);
@@ -305,8 +333,10 @@ public class GUI extends javax.swing.JFrame {
         jPanel2.setBounds(0, 380, 500, 20);
 
         checkProxiesBackground.setBackground(new java.awt.Color(255, 255, 255));
+        checkProxiesBackground.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
         btnCheckProxies.setBackground(new java.awt.Color(255, 153, 51));
+        btnCheckProxies.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         btnCheckProxies.setText("Check Proxies");
         btnCheckProxies.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -319,17 +349,22 @@ public class GUI extends javax.swing.JFrame {
         checkProxiesBackground.setBounds(0, 460, 500, 40);
 
         backgroundURL_Threads.setBackground(new java.awt.Color(255, 255, 255));
+        backgroundURL_Threads.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
 
+        lblURL.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         lblURL.setText("URL:");
         backgroundURL_Threads.add(lblURL);
 
+        checkURL.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         checkURL.setText("http://www.google.com");
         backgroundURL_Threads.add(checkURL);
 
+        lblThreadCount.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         lblThreadCount.setText("Threads:");
         backgroundURL_Threads.add(lblThreadCount);
 
-        spinnerThreadCount.setToolTipText("");
+        spinnerThreadCount.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
+        spinnerThreadCount.setToolTipText("Warning: Too many threads may cause performance issues.");
         spinnerThreadCount.setPreferredSize(new java.awt.Dimension(60, 26));
         spinnerThreadCount.setValue(100);
         backgroundURL_Threads.add(spinnerThreadCount);
@@ -372,8 +407,12 @@ public class GUI extends javax.swing.JFrame {
             genode.start();  
         }
         if(sitesToScrape.contains("proxy-list")){
-            ProxyFetcher_ProxyList proxyList = new ProxyFetcher_ProxyList();
+            ProxyFetcher_ProxyListDownload proxyList = new ProxyFetcher_ProxyListDownload();
             proxyList.start();
+        }
+        if(sitesToScrape.contains("openproxy-list")){
+            ProxyFetcher_OpenProxyList openproxylist = new ProxyFetcher_OpenProxyList();
+            openproxylist.start();
         }
     }//GEN-LAST:event_btnStartActionPerformed
 
@@ -478,10 +517,10 @@ public class GUI extends javax.swing.JFrame {
                 int threads = Integer.parseInt(threadString);
                 String url = checkURL.getText();
 
-                if(threads>200){
+                if(threads==0){
                     JOptionPane.showMessageDialog(
                 this, 
-                "Please use 200 threads or less!",
+                "You must use at least 1 thread!",
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
                 }
@@ -495,30 +534,37 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCheckProxiesActionPerformed
 
     private void siteProxyScrapeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siteProxyScrapeActionPerformed
-                                               
-    if(siteProxyScrape.isSelected()){
-        if (!sitesToScrape.contains("proxyscrape")) {
-            sitesToScrape.add("proxyscrape");
-        }
-    } 
-    else {
+        if(siteProxyScrape.isSelected()){
+            if (!sitesToScrape.contains("proxyscrape")) {
+                sitesToScrape.add("proxyscrape");
+            }
+        } 
+        else {
         sitesToScrape.remove("proxyscrape");
-    }
-
-
+        }
     }//GEN-LAST:event_siteProxyScrapeActionPerformed
 
     private void siteProxyListDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siteProxyListDownloadActionPerformed
-        if(siteProxyScrape.isSelected()){
-        if (!sitesToScrape.contains("proxy-list")) {
-            sitesToScrape.add("proxy-list");
-        }
-    } 
-    else {
+        if(siteProxyListDownload.isSelected()){
+            if (!sitesToScrape.contains("proxy-list")) {
+                sitesToScrape.add("proxy-list");
+            }
+        } 
+        else {
         sitesToScrape.remove("proxy-list");
-    }
-
+        }
     }//GEN-LAST:event_siteProxyListDownloadActionPerformed
+
+    private void siteOpenProxyListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siteOpenProxyListActionPerformed
+        if(siteOpenProxyList.isSelected()){
+            if (!sitesToScrape.contains("openproxy-list")) {
+                sitesToScrape.add("openproxy-list");
+            }
+        } 
+        else {
+        sitesToScrape.remove("openproxy-list");
+        }
+    }//GEN-LAST:event_siteOpenProxyListActionPerformed
 
     /**
      * @param args the command line arguments
@@ -581,6 +627,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel proxyTypeBackground;
     private javax.swing.JCheckBox showProxyType;
     private javax.swing.JCheckBox siteGeonode;
+    private javax.swing.JCheckBox siteOpenProxyList;
     private javax.swing.JCheckBox siteProxyListDownload;
     private javax.swing.JCheckBox siteProxyScrape;
     private javax.swing.JPanel sitesBackground;

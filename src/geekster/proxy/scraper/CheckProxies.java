@@ -43,15 +43,12 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
     private boolean isDialogShown = false;
     private static boolean IN_PROGRESS = false;
     private String urlString;
-     
-
-    private static final String SUCCESS_STYLE = "SuccessStyle";
-    private static final String FAIL_STYLE = "FailStyle";
-    
+ 
     
     static {
         displayProxyList.add("http");
-        
+        displayProxyList.add("socks4");
+        displayProxyList.add("socks5");
     }
     
     public CheckProxies(JTextArea outputArea, int threads, String urlString) {
@@ -65,8 +62,6 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         btnCopyClipboard.setVisible(false);
         comboboxProxyType.setVisible(false);
         
-        
-        
         executorService = Executors.newFixedThreadPool(threads);
         new Thread(this).start();
 
@@ -75,11 +70,11 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         setLocation((desktopSize.width - frameSize.width) / 2, (desktopSize.height - frameSize.height) / 2);
         
         addInternalFrameListener(new InternalFrameAdapter() {
-        @Override
-        public void internalFrameClosing(InternalFrameEvent e) {
-            IN_PROGRESS = false;
-        }
-    });
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                IN_PROGRESS = false;
+            }
+        });
     }
 
     @Override
@@ -147,7 +142,6 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
             e.printStackTrace();
         }
 
-        // Show the completion dialog after all tasks are done
         SwingUtilities.invokeLater(() -> {
             long endTime = System.currentTimeMillis();
             long elapsedTime = endTime - startTime;
@@ -158,8 +152,6 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
 
             String timeFormatted = String.format("%dh:%dm:%ds", hours, minutes, seconds);
             
-            
-            
             lblStatus.setText("Done.");
             JOptionPane.showMessageDialog(
                     this,
@@ -168,10 +160,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
                     "Results",
                     JOptionPane.INFORMATION_MESSAGE
             );
-           
-            
-            
-            
+          
             updateCheckedProxyDisplay();
             btnCopyClipboard.setVisible(true);
             btnSaveFile.setVisible(true);
@@ -210,7 +199,8 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
     private static void appendToOutputArea(String text, boolean isSuccess) {
         StyledDocument doc = checkedProxyOutputArea.getStyledDocument();
         Style style = checkedProxyOutputArea.addStyle("ProxyStyle", null);
-        StyleConstants.setForeground(style, isSuccess ? Color.GREEN : Color.RED);
+        Color color = isSuccess ? new Color(102, 255, 51) : Color.RED;
+        StyleConstants.setForeground(style, color);
 
         try {
             doc.insertString(doc.getLength(), text, style);
@@ -246,32 +236,32 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
     }
 
     public static void updateCheckedProxyDisplay() {
-    SwingUtilities.invokeLater(() -> {
-        checkedProxyOutputArea.setText("");
+        SwingUtilities.invokeLater(() -> {
+            checkedProxyOutputArea.setText("");
 
-        boolean showType = showProxyType.isSelected(); 
+            boolean showType = showProxyType.isSelected(); 
 
-        for (String proxy : successfulProxyList) {
-            boolean matchesType = false;
-            for (String displayProxy : displayProxyList) {
-                if (proxy.toLowerCase().contains(displayProxy.toLowerCase())) {
-                    matchesType = true;
-                    break;
+            for (String proxy : successfulProxyList) {
+                boolean matchesType = false;
+                for (String displayProxy : displayProxyList) {
+                    if (proxy.toLowerCase().contains(displayProxy.toLowerCase())) {
+                        matchesType = true;
+                        break;
+                    }
+                }
+
+                if (matchesType) {
+                    if (showType) {
+                        appendToOutputArea(proxy + "\n", true); 
+                    } else {
+                        String[] parts = proxy.split("://");
+                        String formattedProxy = parts.length > 1 ? parts[1] : proxy;
+                        appendToOutputArea(formattedProxy + "\n", true); 
+                    }
                 }
             }
-
-            if (matchesType) {
-                if (showType) {
-                    appendToOutputArea(proxy + "\n", true); 
-                } else {
-                    String[] parts = proxy.split("://");
-                    String formattedProxy = parts.length > 1 ? parts[1] : proxy;
-                    appendToOutputArea(formattedProxy + "\n", true); 
-                }
-            }
-        }
-    });
-}
+        });
+    }
     
     public static boolean status(){
         return IN_PROGRESS;
@@ -332,7 +322,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
         lblStatus.setBackground(new java.awt.Color(255, 255, 255));
-        lblStatus.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblStatus.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         lblStatus.setForeground(new java.awt.Color(255, 255, 255));
         lblStatus.setText("Checking...");
         jPanel1.add(lblStatus);
@@ -344,6 +334,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         jPanel2.setBackground(new java.awt.Color(0, 0, 0));
 
         showProxyType.setBackground(new java.awt.Color(0, 0, 0));
+        showProxyType.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         showProxyType.setForeground(new java.awt.Color(255, 255, 255));
         showProxyType.setText("Show proxy type");
         showProxyType.addActionListener(new java.awt.event.ActionListener() {
@@ -354,6 +345,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         jPanel2.add(showProxyType);
 
         comboboxProxyType.setBackground(new java.awt.Color(255, 255, 254));
+        comboboxProxyType.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         comboboxProxyType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "HTTP", "SOCKS4", "SOCKS5" }));
         comboboxProxyType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -363,12 +355,13 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         jPanel2.add(comboboxProxyType);
 
         checkedProxyOutputArea.setEditable(false);
+        checkedProxyOutputArea.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 12)); // NOI18N
         jScrollPane2.setViewportView(checkedProxyOutputArea);
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
 
         lblChecked.setBackground(new java.awt.Color(0, 0, 0));
-        lblChecked.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblChecked.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         lblChecked.setForeground(new java.awt.Color(255, 255, 255));
         lblChecked.setText("Checked");
         jPanel3.add(lblChecked);
@@ -377,7 +370,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         lblCheckedNum.setForeground(new java.awt.Color(255, 255, 255));
         jPanel3.add(lblCheckedNum);
 
-        lblOutOf.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblOutOf.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         lblOutOf.setForeground(new java.awt.Color(255, 255, 255));
         lblOutOf.setText("out of");
         jPanel3.add(lblOutOf);
@@ -386,7 +379,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         lblTotalProxies.setForeground(new java.awt.Color(255, 255, 255));
         jPanel3.add(lblTotalProxies);
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("|");
         jPanel3.add(jLabel4);
@@ -395,7 +388,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         lblPercentage.setForeground(new java.awt.Color(255, 255, 255));
         jPanel3.add(lblPercentage);
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Yu Gothic UI Semilight", 1, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("|");
         jPanel3.add(jLabel5);
@@ -404,6 +397,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         jPanel3.add(elapsedTimed);
 
         btnSaveFile.setBackground(new java.awt.Color(255, 255, 254));
+        btnSaveFile.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         btnSaveFile.setText("Save to file");
         btnSaveFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -412,6 +406,7 @@ public class CheckProxies extends javax.swing.JInternalFrame implements Runnable
         });
 
         btnCopyClipboard.setBackground(new java.awt.Color(255, 255, 254));
+        btnCopyClipboard.setFont(new java.awt.Font("Yu Gothic UI Semilight", 0, 12)); // NOI18N
         btnCopyClipboard.setText("Copy ");
         btnCopyClipboard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
